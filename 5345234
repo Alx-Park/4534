@@ -1,0 +1,162 @@
+#include <iostream>
+#include <conio.h>
+using namespace std;
+
+bool cnt_wrk() {
+	char c;
+	cout << endl << "1.Again | 2.Menu ";
+	do {
+		c = _getch();
+	} while ((c != '1') && (c != '2'));
+	cout << endl;
+	if (c == '1')
+		return 1;
+	return 0;
+}
+
+union real_num {
+	float value;
+	char mass[sizeof(value)];
+};
+
+void output_real(real_num none) {
+	for (int i = 3; i >= 0; i--) {
+		for (int j = 0; j < 8; j++) {
+			if ((none.mass[i] & (128 >> j)))
+				cout << "1";
+			else
+				cout << "0";
+		}
+		cout << " ";
+	}
+}
+
+long long ctrl_int(int count) {
+	bool flag = false;
+	long long none = 0;
+	int t = 0;
+	char c;
+	do {
+		c = _getch();
+		if ((c >= '0') && (c <= '9')) {
+			none = none * 10 + c - '0';
+			cout << c;
+			t++;
+		}
+		else if (c == '-') {
+			cout << c;
+			flag = true;
+		}
+	} while ((c != 13) && (count > t));
+	cout << endl;
+	if (flag)
+		return none * (-1);
+	return none;
+}
+
+long long input_int(const char* promt, long long lower_limit, long long upper_limit, int symbol) {
+	long long value;
+	do {
+		cout << promt;
+		value = ctrl_int(symbol);
+		if (!((value >= lower_limit) && (value <= upper_limit)))
+			cout << "Error! ";
+	} while (!((value >= lower_limit) && (value <= upper_limit)));
+	return value;
+}
+
+void cnv(int separator) {
+	unsigned long long bitwise = 0;
+	long long v_int;
+	long long v_Uint;
+	long long v_lglg;
+	long long value = 0;
+	long long v_bool;
+	int count = 0;
+	char v_char;
+	do {
+		if (separator == 1) {
+			bitwise = 128;
+			v_bool = input_int("Bool: ", 0, 1, 1);
+			value = v_bool;
+		}
+		else if (separator == 2) {
+			bitwise = 128;
+			cout << "Char: ";
+			v_char = _getche();
+			cout << endl;
+			value = v_char;
+		}
+		else if (separator == 3) {
+			bitwise = 2147483648;
+			v_int = input_int("Integer: ", -2147483648, 2147483647, 10);
+			value = v_int;
+		}
+		else if (separator == 4) {
+			bitwise = 2147483648;
+			v_Uint = input_int("UInteger: ", 0, 4294967295, 10);
+			value = v_Uint;
+		}
+		else if (separator == 5) {
+			bitwise = 9223372036854775808;
+			v_lglg = input_int("Long long: ", -9223372036854775807,
+				9223372036854775807, 19);
+			value = v_lglg;
+		}
+		cout << "U: " << value << endl;
+		cout << "Result: ";
+		while (true) {
+			if (value & bitwise)
+				cout << "1";
+			else
+				cout << "0";
+			count++;
+			/*if (count % 8 == 0)
+				cout << " ";*/
+			if (bitwise == 1)
+				break;
+			bitwise >>= 1;
+		}
+
+	} while (cnt_wrk());
+	cout << endl;
+}
+
+int main() {
+	long long type;
+	float number;
+	cout << "----MENU----" << '\n' << "1) Bool (0...1)" <<
+		'\n' << "2) Char (symbol)" << '\n' << "3) Integer (-2147483648...2147483647)" <<
+		'\n' << "4) Unsigned Integer (0...4294967295)" <<
+		'\n' << "5) Long long (-9223372036854775807...9223372036854775807)"
+		<< '\n' << "6) Double (+/- 1,7E +/- 308) " << endl;
+	do {
+		type = input_int("Select the Type ('0' to exit): ", 0, 6, 1);
+		cout << endl;
+		switch (type) {
+		case 0:
+			exit(0);
+		case 1:
+			cnv(1);
+			break;
+		case 2:
+			cnv(2);
+			break;
+		case 3:
+			cnv(3);
+			break;
+		case 4:
+			cnv(4);
+			break;
+		case 5:
+			cnv(5);
+			break;
+		case 6:
+			cin >> number;
+			real_num none;
+			none.value = number;
+			output_real(none);
+			cout << endl;
+		}
+	} while (type);
+}
